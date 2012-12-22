@@ -16,7 +16,7 @@
 + (BOOL)existsPrivateSettingsFile;
 
 - (id)getPropertyValue:(NSString *)key;
-- (BOOL)setPropertyValue:(NSString *)key value:(id)value;
+- (BOOL)setPropertyValue:(id)value forKey:(NSString *)key;
 
 - (BOOL)save;
 

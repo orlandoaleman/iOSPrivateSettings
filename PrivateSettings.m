@@ -59,6 +59,7 @@
     }
 }
 
+
 - (BOOL)readAllSettings
 {
     if (_settingsDic) return YES;
@@ -75,6 +76,7 @@
     return YES;
 }
 
+
 - (BOOL)save
 {
     if (!_settingsDic) {
@@ -84,20 +86,22 @@
 }
 
 
-- (BOOL)setPropertyValue:(NSString *)key value:(id)value {
-    if (!_settingsDic) {
-        if (![self readAllSettings]) return NO;
-    }
-    [_settingsDic setValue:value forKey:key];
-    return YES;
-}
-
 - (id)getPropertyValue:(NSString *)key
 {
     if (!_settingsDic) {
         if (![self readAllSettings]) return nil;
     }
     return [_settingsDic valueForKey:key];
+}
+
+
+- (BOOL)setPropertyValue:(id)value forKey:(NSString *)key
+{
+    if (!_settingsDic) {
+        if (![self readAllSettings]) return NO;
+    }
+    [_settingsDic setValue:value forKey:key];
+    return YES;
 }
 
 
