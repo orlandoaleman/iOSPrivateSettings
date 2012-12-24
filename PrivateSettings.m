@@ -67,12 +67,13 @@
     NSString *errorDesc = nil;
     NSPropertyListFormat format;
     NSData *plistXML = [[NSFileManager defaultManager] contentsAtPath:[_privateSettingsURL path]];
-    NSDictionary *props = (NSDictionary *)[NSPropertyListSerialization propertyListFromData:plistXML mutabilityOption:NSPropertyListMutableContainersAndLeaves format:&format errorDescription:&errorDesc];
-
+    NSDictionary *props = (NSDictionary *)[NSPropertyListSerialization propertyListFromData:plistXML
+                                                                           mutabilityOption:NSPropertyListMutableContainersAndLeaves
+                                                                                     format:&format
+                                                                           errorDescription:&errorDesc];
     if (!props) return NO;
 
     _settingsDic = [[NSMutableDictionary alloc] initWithDictionary:props];
-
     return YES;
 }
 
