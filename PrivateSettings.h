@@ -1,6 +1,6 @@
 //
 //  PrivateSettings.h
-//  CareForMe
+//  orlandoaleman.com
 //
 //  Created by Orlando Aleman Ortiz on 19/03/12.
 //  Copyright (c) 2012 OrlandoAleman.com. All rights reserved.
