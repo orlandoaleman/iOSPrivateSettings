@@ -54,8 +54,8 @@
     NSFileManager *fileManager = [NSFileManager defaultManager];
     
     if (![fileManager fileExistsAtPath:[_privateSettingsURL path]]) {
-        NSString *defaultStorePath = [[NSBundle mainBundle] pathForResource:PRIVATESETTINGS_FILE ofType:nil];
-        if (defaultStorePath) [fileManager copyItemAtPath:defaultStorePath toPath:[_privateSettingsURL path] error:NULL];
+        NSString *defaultsPath = [[NSBundle mainBundle] pathForResource:PRIVATESETTINGS_FILE ofType:nil];
+        if (defaultsPath) [fileManager copyItemAtPath:defaultsPath toPath:[_privateSettingsURL path] error:NULL];
     }
 }
 
