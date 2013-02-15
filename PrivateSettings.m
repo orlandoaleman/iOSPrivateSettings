@@ -11,7 +11,6 @@
 
 @interface PrivateSettings () {
     NSMutableDictionary *_settingsDic;
-    NSURL *_privateSettingsURL;
 }
 @end
 
@@ -33,48 +32,42 @@
 {
     self = [super init];
     if (self) {
-        _privateSettingsURL = [self genPrivateSettingsURL];
-        [self createPrivateSettingsFileIfNeeded];
-        BOOL success = [self readAllSettings];
-        if (!success) _settingsDic = [NSMutableDictionary dictionary];
+        [self readSettings];
     }
     return self;
 }
 
 
-- (NSURL *)genPrivateSettingsURL
+- (NSDictionary *)readPropertyList:(NSString *)path
 {
-    NSURL *documentsURL = [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
-    return [documentsURL URLByAppendingPathComponent:PRIVATESETTINGS_FILE];
+    NSError *error = nil; NSPropertyListFormat format;
+    NSData *plistXML = [[NSFileManager defaultManager] contentsAtPath:path];
+    NSDictionary *props = [NSPropertyListSerialization propertyListWithData:plistXML
+                                              options:NSPropertyListImmutable
+                                               format:&format
+                                                error:&error];
+    return props;
 }
 
 
-- (void)createPrivateSettingsFileIfNeeded
+- (BOOL)readSettings
 {
     NSFileManager *fileManager = [NSFileManager defaultManager];
+
+    NSString *defaultSettingsPath = [[NSBundle mainBundle] pathForResource:PRIVATESETTINGS_FILE ofType:nil];
+    NSString *settingsPath = [[PrivateSettings privateSettingsURL] path];
     
-    if (![fileManager fileExistsAtPath:[_privateSettingsURL path]]) {
-        NSString *defaultsPath = [[NSBundle mainBundle] pathForResource:PRIVATESETTINGS_FILE ofType:nil];
-        if (defaultsPath) [fileManager copyItemAtPath:defaultsPath toPath:[_privateSettingsURL path] error:NULL];
+    _settingsDic = [NSMutableDictionary dictionary];
+
+    if ([fileManager fileExistsAtPath:defaultSettingsPath]) {
+        [_settingsDic addEntriesFromDictionary:[self readPropertyList:defaultSettingsPath]];
     }
-}
+    
+    if ([fileManager fileExistsAtPath:settingsPath]) {
+        [_settingsDic addEntriesFromDictionary:[self readPropertyList:settingsPath]];
+    }
 
-
-- (BOOL)readAllSettings
-{
-    if (_settingsDic) return YES;
-
-    NSString *errorDesc = nil;
-    NSPropertyListFormat format;
-    NSData *plistXML = [[NSFileManager defaultManager] contentsAtPath:[_privateSettingsURL path]];
-    NSDictionary *props = (NSDictionary *)[NSPropertyListSerialization propertyListFromData:plistXML
-                                                                           mutabilityOption:NSPropertyListMutableContainersAndLeaves
-                                                                                     format:&format
-                                                                           errorDescription:&errorDesc];
-    if (!props) return NO;
-
-    _settingsDic = [[NSMutableDictionary alloc] initWithDictionary:props];
-    return YES;
+    return _settingsDic; // != nil
 }
 
 
@@ -83,7 +76,7 @@
     if (!_settingsDic) {
         return NO;
     }
-    return [_settingsDic writeToURL:_privateSettingsURL atomically:NO];
+    return [_settingsDic writeToURL:[PrivateSettings privateSettingsURL] atomically:NO];
 }
 
 
@@ -91,7 +84,7 @@
 - (id)getPropertyValue:(NSString *)key
 {
     if (!_settingsDic) {
-        if (![self readAllSettings]) return nil;
+        if (![self readSettings]) return nil;
     }
     return [_settingsDic valueForKey:key];
 }
@@ -100,7 +93,7 @@
 - (BOOL)setPropertyValue:(id)value forKey:(NSString *)key
 {
     if (!_settingsDic) {
-        if (![self readAllSettings]) return NO;
+        if (![self readSettings]) return NO;
     }
     [_settingsDic setValue:value forKey:key];
     return YES;
@@ -122,9 +115,19 @@
 + (BOOL)existsPrivateSettingsFile
 {
     NSFileManager *fileManager = [NSFileManager defaultManager];
-    NSURL *documentsURL = [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
-    NSURL *settingsURL = [documentsURL URLByAppendingPathComponent:PRIVATESETTINGS_FILE];
-    return [fileManager fileExistsAtPath:[settingsURL path]];
+    return [fileManager fileExistsAtPath:[[PrivateSettings privateSettingsURL] path]];
+}
+
+
++ (NSURL *)privateSettingsURL
+{
+    static NSURL *privateSettingsURL = nil;
+    if (!privateSettingsURL) {
+        NSURL *documentsURL = [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory
+                                                                      inDomains:NSUserDomainMask] lastObject];
+        privateSettingsURL = [documentsURL URLByAppendingPathComponent:PRIVATESETTINGS_FILE];
+    }
+    return privateSettingsURL;
 }
 
 @end
