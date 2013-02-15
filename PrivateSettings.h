@@ -37,4 +37,6 @@
 - (void)setObject:(id)object forKeyedSubscript:(NSString *)key;
 
 
+- (void)reset;
+
 @end

@@ -130,4 +130,20 @@
     return privateSettingsURL;
 }
 
+- (void)reset
+{
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+
+    NSString *settingsPath = [[PrivateSettings privateSettingsURL] path];
+    
+    NSError *error = nil;
+    if ([fileManager fileExistsAtPath:settingsPath]) {
+        if (![fileManager removeItemAtPath:settingsPath error:&error]) {
+            NSLog(@"%@", error);
+        }
+    }
+
+    [self readSettings];
+}
+
 @end
