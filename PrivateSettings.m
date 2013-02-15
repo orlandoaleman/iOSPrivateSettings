@@ -87,6 +87,7 @@
 }
 
 
+
 - (id)getPropertyValue:(NSString *)key
 {
     if (!_settingsDic) {
@@ -103,6 +104,18 @@
     }
     [_settingsDic setValue:value forKey:key];
     return YES;
+}
+
+
+- (id)objectForKeyedSubscript:(NSString *)key
+{
+    return [self getPropertyValue:key];
+}
+
+
+- (void)setObject:(id)object forKeyedSubscript:(NSString *)key
+{
+    [self setPropertyValue:object forKey:key];
 }
 
 
