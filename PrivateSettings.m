@@ -142,7 +142,8 @@
             NSLog(@"%@", error);
         }
     }
-
+    [_settingsDic removeAllObjects];
+    
     [self readSettings];
 }
 
