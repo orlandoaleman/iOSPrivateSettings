@@ -95,7 +95,7 @@
     if (!_settingsDic) {
         if (![self readSettings]) return NO;
     }
-    [_settingsDic setValue:value forKey:key];
+    [_settingsDic setValue:[value copy] forKey:key];
     return YES;
 }
 
@@ -108,7 +108,7 @@
 
 - (void)setObject:(id)object forKeyedSubscript:(NSString *)key
 {
-    [self setPropertyValue:object forKey:key];
+    [self setPropertyValue:[object copy] forKey:key];
 }
 
 
