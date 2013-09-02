@@ -8,26 +8,29 @@
 
 #import <Foundation/Foundation.h>
 
-#define PRIVATESETTINGS_FILE @"private.plist"
+#define PRIVATESETTINGS_FILE @"privateSettings.plist"
 
 @interface PrivateSettings : NSObject
 
 + (PrivateSettings *)sharedInstance;
+
+/* */
 + (BOOL)existsPrivateSettingsFile;
 
+/* */
 - (BOOL)save;
 
+/* */
 - (id)getPropertyValue:(NSString *)key;
 
+/* */
 - (BOOL)setPropertyValue:(id)value forKey:(NSString *)key;
-
 
 /*!
  In LLVM 4.0 (XCode 4.5) or higher allows myPFObject[key].
  @param key The key.
 */
 - (id)objectForKeyedSubscript:(NSString *)key;
-
 
 /*!
  In LLVM 4.0 (XCode 4.5) or higher allows myObject[key] = value
