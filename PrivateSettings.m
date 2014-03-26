@@ -73,18 +73,15 @@
 
 - (BOOL)save
 {
-    if (!_settingsDic) {
-        return NO;
-    }
-    return [_settingsDic writeToURL:[PrivateSettings privateSettingsURL] atomically:NO];
+    return _settingsDic != nil && [_settingsDic writeToURL:[PrivateSettings privateSettingsURL] atomically:NO];
 }
 
 
 
 - (id)getPropertyValue:(NSString *)key
 {
-    if (!_settingsDic) {
-        if (![self readSettings]) return nil;
+    if (!_settingsDic && ![self readSettings]) {
+        return nil;
     }
     return [_settingsDic valueForKey:key];
 }
