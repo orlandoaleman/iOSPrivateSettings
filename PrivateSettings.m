@@ -67,7 +67,7 @@
         [_settingsDic addEntriesFromDictionary:[self readPropertyList:settingsPath]];
     }
 
-    return _settingsDic; // != nil
+    return _settingsDic != nil;
 }
 
 
